@@ -5,6 +5,10 @@ View for student api.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 
 
 from core.models import *
@@ -40,6 +44,9 @@ class StudentDetailAPI(APIView):
     """
     For handle listing , updating students by ids.
     """
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self,request,pk):
         """Show student by their id."""
@@ -80,3 +87,10 @@ class StudentDetailAPI(APIView):
         std.delete()
 
         return Response({'Message':'Deleted successfully!!',},status=status.HTTP_204_NO_CONTENT)
+
+
+class CreateToken(ObtainAuthToken):
+    """
+    Handle user authentications.
+    """
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
